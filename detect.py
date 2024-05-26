@@ -22,6 +22,43 @@ from tflite_support.task import processor
 from tflite_support.task import vision
 import utils
 
+# Define and parse input arguments
+parser = argparse.ArgumentParser(
+      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+parser.add_argument(
+      '--model',
+      help='Path of the object detection model.',
+      required=False,
+      default='ssd_mobilenet_v2_metadata.tflite')
+parser.add_argument(
+      '--cameraId', help='Id of camera.', required=False, type=int, default=0)
+parser.add_argument(
+      '--frameWidth',
+      help='Width of frame to capture from camera.',
+      required=False,
+      type=int,
+      default=640)
+parser.add_argument(
+      '--frameHeight',
+      help='Height of frame to capture from camera.',
+      required=False,
+      type=int,
+      default=480)
+parser.add_argument(
+      '--numThreads',
+      help='Number of CPU threads to run the model.',
+      required=False,
+      type=int,
+      default=4)
+parser.add_argument(
+      '--enableEdgeTPU',
+      help='Whether to run the model on EdgeTPU.',
+      action='store_true',
+      required=False,
+      default=False)
+
+args = parser.parse_args()
 
 def run(model: str, cameraId: int, width: int, height: int, num_threads: int,
         enable_edgetpu: bool) -> None:
@@ -41,7 +78,7 @@ def run(model: str, cameraId: int, width: int, height: int, num_threads: int,
   start_time = time.time()
 
   # Start capturing video input from the camera
-  cap = cv2.VideoCapture('video/video3.mp4')
+  cap = cv2.VideoCapture(0)
   cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
   cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
@@ -57,13 +94,26 @@ def run(model: str, cameraId: int, width: int, height: int, num_threads: int,
   base_options = core.BaseOptions(
       file_name=model, use_coral=enable_edgetpu, num_threads=num_threads)
   detection_options = processor.DetectionOptions(
-      max_results=100, score_threshold=0.5)
+      max_results=50, score_threshold=0.3)
   options = vision.ObjectDetectorOptions(
       base_options=base_options, detection_options=detection_options)
   detector = vision.ObjectDetector.create_from_options(options)
 
   # Continuously capture images from the camera and run inference
-  while cap.isOpened():
+  last_camera_open_time = time.time()
+  while True:
+    current_time = time.time()
+    #Reopen the camera every 30 seconds
+    if current_time - last_camera_open_time >= 30:
+      if 'cap' in locals():
+        cap.release()
+        cv2.destroyAllWindows()
+
+      cap = cv2.VideoCapture(0)
+      cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+      cap.set(cv2.CAP_PROP_FRAME_HEIGHT,height)
+
+     
     success, image = cap.read()
     if not success:
       sys.exit(
@@ -81,6 +131,9 @@ def run(model: str, cameraId: int, width: int, height: int, num_threads: int,
 
     # Run object detection estimation using the model.
     detection_result = detector.detect(input_tensor)
+    jumlahIkan = len(detection_result.detections)
+    print(jumlahIkan)
+    # print (len(detection_result.detections))
 
     # Draw keypoints and edges on input image
     image = utils.visualize(image, detection_result)
@@ -95,6 +148,12 @@ def run(model: str, cameraId: int, width: int, height: int, num_threads: int,
     fps_text = 'FPS = {:.1f}'.format(fps)
     text_location = (left_margin, row_size)
     cv2.putText(image, fps_text, text_location, cv2.FONT_HERSHEY_PLAIN,
+                font_size, text_color, font_thickness)
+    
+    # Show the number of detected fish
+    jumlahIkan_text = 'Jumlah Ikan = {}'.format(jumlahIkan)
+    jumlahIkan_location = (left_margin, row_size * 2)
+    cv2.putText(image, jumlahIkan_text, jumlahIkan_location, cv2.FONT_HERSHEY_PLAIN,
                 font_size, text_color, font_thickness)
 
     # Stop the program if the ESC key is pressed.
