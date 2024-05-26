@@ -7,7 +7,7 @@ from tflite_support.task import processor
 from tflite_support.task import vision
 import utils
 
-model = 'ssd_mobilenet_v2_metadata.tflite'
+model = 'ssd_mobilenet_v2_metadata2.tflite'
 cameraId = 0
 width = 640
 height = 480
@@ -28,7 +28,7 @@ options = vision.ObjectDetectorOptions(
     base_options=base_options, detection_options=detection_options)
 detector = vision.ObjectDetector.create_from_options(options)
 
-def count(interval):
+def count(interval, total_terdetect):
     # Continuously capture images from the camera and run inference
     global cap, detector
     
@@ -44,14 +44,18 @@ def count(interval):
     font_thickness = 1
     fps_avg_frame_count = 10
 
-    last_camera_open_time = time.time()
+    last_camera_open_time = round(time.time())
     Maxjumlah = 0
     while True:
         current_time = round(time.time())
         #Reopen the camera every 30 seconds
-        if current_time - last_camera_open_time < interval:
+        diff = current_time - last_camera_open_time
+        print("Waktu : {}".format(diff))
+        
+        if diff > interval:
             if 'cap' in locals():
                 cap.release()
+            break
 
             # cap = cv2.VideoCapture(0)
             # cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -98,13 +102,17 @@ def count(interval):
         jumlahIkan_location = (left_margin, row_size * 2)
         cv2.putText(image, jumlahIkan_text, jumlahIkan_location, cv2.FONT_HERSHEY_PLAIN,
                     font_size, text_color, font_thickness)
-
+        
+        totalIkan_text = 'Total Ikan = {}'.format(total_terdetect)
+        totalIkan_location = (left_margin, row_size * 3)
+        cv2.putText(image, totalIkan_text, totalIkan_location, cv2.FONT_HERSHEY_PLAIN,
+                    font_size, text_color, font_thickness)
         # Stop the program if the ESC key is pressed.
         if cv2.waitKey(1) == 27:
             break
         cv2.imshow('object_detector', image)
     
-    print("Jumlah ikan yang tedeteksi: {}".format(Maxjumlah))
+    print("Jumlah ikan yang terdeteksi: {}".format(Maxjumlah))
     return Maxjumlah
 
 def stopProgram():
