@@ -5,7 +5,7 @@ class Buzzer:
     def __init__(self) -> None:
         print("Initialize Buzzer")
         self.pi = pigpio.pi()
-        self.buzzer_pin = 24
+        self.buzzer_pin = 17
         self.pi.write(self.buzzer_pin, 0)
 
     def turn_on_buzzer(self):
@@ -25,3 +25,7 @@ class Buzzer:
         self.pi.write(self.buzzer_pin, 0)
         self.pi.stop()
 
+if __name__ == "__main__":
+    buzzer = Buzzer()
+    buzzer.turn_on_buzzer()
+    buzzer.stop()
