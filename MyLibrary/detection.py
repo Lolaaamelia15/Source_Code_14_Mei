@@ -11,6 +11,7 @@ class Detections(object):
     def __init__(self, model: str, cameraId: int = 0) -> None:
         self.__model = model
         self.__cameraId = cameraId
+        self.__cameraId = 0
         self.__width = 640
         self.__height = 480
         self.__num_threads = 4
@@ -69,7 +70,7 @@ class Detections(object):
                 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
                 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT,height)
 
-            success, image = self._cap.read()
+            success, image = self.__cap.read()
             if not success:
                 sys.exit(
                     'ERROR: Unable to read from webcam. Please verify your webcam settings.'

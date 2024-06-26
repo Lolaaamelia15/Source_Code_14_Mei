@@ -11,7 +11,7 @@ class Servo:
     def open(self):
         print("Pintu Terbuka")
         self.pi.set_servo_pulsewidth(self.servoPin, 1500)
-        sleep(2)
+        sleep(10)
 
     def close(self):
         print("Pintu Tertutup")

@@ -33,13 +33,14 @@ class Connection(object):
         try:
             date = datetime.now()
             print(f"{date} : getting status...")
-            response = requests.get(host)
+            header = {"User-Agent" : "Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0"}
+            response = requests.get(host, headers=header)
             status_code = response.status_code
             if status_code == 404:
                 print("404 Not Found")
                 return False, {}
             
-            json = response.json
+            json = response.json()
             return True, json
         except ConnectionError as errconn:
             print(f"Connection Error: {errconn}")
@@ -48,6 +49,7 @@ class Connection(object):
     @staticmethod
     def resetData(host: str):
         # reset table status
-        response = requests.post(host)
+        header = {"User-Agent" : "Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0"}
+        response = requests.post(host,headers=header)
         if response.status_code != 404:
             print(response.json())
