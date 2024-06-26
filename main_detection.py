@@ -36,6 +36,7 @@ while(True):
                 while (jumlah_ikan < jumlah_value):
                     servo.close()             # Matikan servo
                     jumlah_ikan += detection.count(interval=25, total_terdetect=jumlah_ikan) # call hitung
+                    lcd.jumlah(Maxjumlah = jumlah_ikan )
                     servo.open()                # Hidupkan servo
                     sleep(5) # waktu untuk mengeluarkan ikan
                 

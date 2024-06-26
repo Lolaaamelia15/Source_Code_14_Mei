@@ -17,6 +17,11 @@ class LCD:
         sleep(15)
         self.__lcd.close(clear=True)
 
+    def jumlah(self, Maxjumlah=0):
+        self.__lcd.write_string("Jumlah: {}".format(Maxjumlah))
+        sleep(15)
+        self.__lcd.close(clear=True)
+
 if __name__ == "__main__":
     lcd = LCD()
     lcd.tampil(1000,5000)
