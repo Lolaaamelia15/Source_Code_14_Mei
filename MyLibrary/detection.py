@@ -11,8 +11,8 @@ class Detections(object):
     def __init__(self, model: str, cameraId: int = 0) -> None:
         self.__model = model
         self.__cameraId = cameraId
-        # self.__cameraId = "video1.mp4"
-        self.__cameraId = 0
+        self.__cameraId = "video/video1.mp4" 
+        # self.__cameraId = 0
         self.__width = 640
         self.__height = 480
         self.__num_threads = 4

@@ -1,21 +1,21 @@
 # Import module 
 from MyLibrary.connection import Connection
 from MyLibrary.detection import Detections
-from MyLibrary.servo import Servo
-from MyLibrary.buzzer import Buzzer
-from MyLibrary.lcd import LCD
+# from MyLibrary.servo import Servo
+# from MyLibrary.buzzer import Buzzer
+# from MyLibrary.lcd import LCD
 from time import sleep
 import cProfile 
 
 detection = Detections(model='ssd_mobilenet_v2_fpnlite_metadata2.tflite', cameraId=0)
-servo = Servo(pin=13)
-buzzer = Buzzer(pin=17)
-lcd = LCD()
+# servo = Servo(pin=13)
+# buzzer = Buzzer(pin=17)
+# lcd = LCD()
 
 while(True):
     try:
         if Connection.internetReady():
-            success, response_json = Connection.getData("https://fishcounterta.000webhostapp.com/status.php")
+            success, response_json = Connection.getData("http://147.139.170.233:8080/status.php")
             
             if not success:
                 continue
@@ -36,7 +36,7 @@ while(True):
                 percobaanPertama = True
 
                 while (jumlah_ikan < jumlah_value):
-                    servo.close()             # Matikan servo
+                    # servo.close()             # Matikan servo
                     if(percobaanPertama):
                         sleep(5)
                         percobaanPertama = False
@@ -44,18 +44,18 @@ while(True):
                         sleep(15)
                     
                     jumlah_ikan += detection.count(interval=25, total_terdetect=jumlah_ikan) # call hitung
-                    lcd.jumlah(jumlah_ikan)
+                    # lcd.jumlah(jumlah_ikan)
                     print("Total ikan yang terdeteksi : {}".format(jumlah_ikan))
-                    servo.open()                # Hidupkan servo
+                    # servo.open()                # Hidupkan servo
                     sleep(5) # waktu untuk mengeluarkan ikan
                 
                 detection.clearCamera()
-                servo.close()
+                # servo.close()
                 print("Total ikan yang terdeteksi : {}".format(jumlah_ikan))
-                buzzer.turn_on_buzzer()
-                lcd.tampil(jumlah_value=jumlah_value,harga_satuan=harga_value)
+                # buzzer.turn_on_buzzer()
+                # lcd.tampil(jumlah_value=jumlah_value,harga_satuan=harga_value)
 # 
-                Connection.resetData("https://fishcounterta.000webhostapp.com/status.php")
+                Connection.resetData("http://147.139.170.233:8080/status.php")
 
     except KeyboardInterrupt:
         # servo.stop()
@@ -63,4 +63,4 @@ while(True):
         break 
 
     finally:
-        sleep(5)
+        sleep(3)
