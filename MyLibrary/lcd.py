@@ -14,9 +14,14 @@ class LCD:
 
     def tampil(self, jumlah_value=0, harga_satuan=0):
         self.__lcd.write_string("Jumlah: {}\r\nHarga: Rp{}".format(jumlah_value, harga_satuan*jumlah_value))
-        sleep(15)
+        sleep(20)
         self.__lcd.close(clear=True)
+
+    def jumlah(self, Maxjumlah=0):
+        self.__lcd.write_string("Jumlah: {}".format(Maxjumlah))
+        sleep(15)
+        self.__lcd.close(clear=True)      
 
 if __name__ == "__main__":
     lcd = LCD()
-    lcd.tampil(1000,5000)
+    lcd.tampil(40,1000)

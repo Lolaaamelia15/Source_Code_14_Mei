@@ -11,6 +11,7 @@ class Detections(object):
     def __init__(self, model: str, cameraId: int = 0) -> None:
         self.__model = model
         self.__cameraId = cameraId
+        # self.__cameraId = "video1.mp4"
         self.__cameraId = 0
         self.__width = 640
         self.__height = 480
@@ -21,7 +22,7 @@ class Detections(object):
         self.__base_options = core.BaseOptions(
         file_name=self.__model, use_coral=self.__enable_edgetpu, num_threads=self.__num_threads)
         self.__detection_options = processor.DetectionOptions(
-        max_results=100, score_threshold=0.5)
+        max_results=100, score_threshold=0.3)
         self.__options = vision.ObjectDetectorOptions(
             base_options=self.__base_options, detection_options=self.__detection_options)
         self.__detector = vision.ObjectDetector.create_from_options(self.__options)
@@ -127,6 +128,7 @@ class Detections(object):
                 break
         
         print("Jumlah ikan yang terdeteksi: {}".format(Maxjumlah))
+        cv2.destroyAllWindows()
         return Maxjumlah
 
     def clearCamera(self):
