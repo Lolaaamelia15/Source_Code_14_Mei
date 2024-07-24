@@ -19,7 +19,7 @@ class LCD:
 
     def jumlah(self, Maxjumlah=0):
         self.__lcd.write_string("Jumlah: {}".format(Maxjumlah))
-        sleep(15)
+        sleep(5)
         self.__lcd.close(clear=True)      
 
 if __name__ == "__main__":
